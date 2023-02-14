@@ -537,7 +537,9 @@ MonoBehaviour:
   posZRight: 0
   nav: {fileID: 0}
   Target: {x: 0, y: 0, z: 0}
+  displacementDist: 10
   isCatch: 0
+  isDead: 0
 --- !u!1 &1752801591157943679
 GameObject:
   m_ObjectHideFlags: 0

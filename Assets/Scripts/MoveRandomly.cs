@@ -8,20 +8,19 @@ public class MoveRandomly : MonoBehaviour
 {
     [SerializeField] private float timer;
     [SerializeField] private int newTimeTarget;
-    [SerializeField] private float speed;
     [SerializeField] private float posXTop;
     [SerializeField] private float posXBottom;
     [SerializeField] private float posZLeft;
     [SerializeField] private float posZRight;
+    [SerializeField] private float speedAnimal = 10;
     [SerializeField] private NavMeshAgent nav;
     [SerializeField] private Vector3 Target;
+    [SerializeField] private float displacementDist = 10f;
     List<GameObject> animalGo;
     private PlayerController playerController;
     private Billboard billboard;
     public bool isCatch;
     public bool isDead;
-
-
     void Start()
     {
         isDead = false;
@@ -32,10 +31,12 @@ public class MoveRandomly : MonoBehaviour
         nav = GetComponent<NavMeshAgent>();
         newTarget();
     }
-    public void Return(){
+    public void Return()
+    {
         isDead = false;
         isCatch = false;
         billboard.heathBar.value = 1;
+        gameObject.SetActive(true);
     }
     void Update()
     {
@@ -49,24 +50,28 @@ public class MoveRandomly : MonoBehaviour
         if (billboard.heathBar.value <= 0)
         {
             gameObject.SetActive(false);
-
+            playerController.IncrementScore();
             // StartCoroutine(ReturnAnimal());
             playerController.avaiableCatch += 1;
         }
-        // if(!gameObject.activeSelf){
-
-        //     StartCoroutine(ReturnAnimal());
-        // }
     }
+    void MoveToPos(Vector3 pos)
+    {
+        nav.SetDestination(pos);
+        nav.speed = speedAnimal;
+    }
+    // void OnDrawGizmos()
+    // {
+    //     Gizmos.color = Color.red;
+    //     Gizmos.DrawLine(transform.position, playerController.gameObject.transform.position);
+    // }
     void PointInsideSphere()
     {
         float dis = Vector3.Distance(transform.position, playerController.transform.position);
-        if (dis <= playerController.radius)
+        if (dis <= playerController.Radius)
         {
-            // Destroy(gameObject);
-            if (playerController.avaiableCatch > 0)
+            if (playerController.avaiableCatch > 0 && !isCatch)
             {
-                // Debug.Log(playerController.curIsCatch + " " + playerController.avaiableCatch);
                 billboard.minusHp = true;
                 playerController.avaiableCatch -= 1;
                 isCatch = true;
@@ -74,13 +79,22 @@ public class MoveRandomly : MonoBehaviour
         }
         else
         {
-            if (playerController.avaiableCatch == 0 && isCatch)
+            if (isCatch)
             {
                 playerController.avaiableCatch += 1;
                 isCatch = false;
             }
             billboard.minusHp = false;
             // animalGo.Remove(gameObject);
+        }
+        if (isCatch)
+        {
+            Vector3 normDir = (transform.position - playerController.gameObject.transform.position).normalized;
+            MoveToPos(playerController.gameObject.transform.position + (normDir * displacementDist));
+            // Debug.Log("Covaodaykhong");
+            if(dis > playerController.Radius){
+                isCatch = false;
+            }
         }
     }
     void newTarget()

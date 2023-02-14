@@ -1808,4 +1808,6 @@ MonoBehaviour:
   posZRight: 0
   nav: {fileID: 0}
   Target: {x: 0, y: 0, z: 0}
+  displacementDist: 10
   isCatch: 0
+  isDead: 0

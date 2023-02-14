@@ -7,6 +7,7 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private GameObject[] animalList;
     [SerializeField] private int amoutSpawn;
     [SerializeField] float spawnRange = 20;
+    [SerializeField] float timeSpawnAgain = 6;
     [SerializeField] MoveRandomly[] all;
     private int enemyCount;
     // Start is called before the first frame update
@@ -24,7 +25,7 @@ public class SpawnManager : MonoBehaviour
     void SpawnRandomAnimal(int index, int i)
     {
         // int animalIndex = Random.Range(0,animalList.Length);
-        GameObject track = Instantiate(animalList[index], GenerateSpawnPosition(), animalList[index].transform.rotation);
+        Instantiate(animalList[index], GenerateSpawnPosition(), animalList[index].transform.rotation);
         // track.name = $"chicken{i.ToString()}{index.ToString()}";
     }
     Vector3 GenerateSpawnPosition()
@@ -49,8 +50,7 @@ public class SpawnManager : MonoBehaviour
         }
     }
     IEnumerator ReturnAnimal(MoveRandomly animal){
-        yield return new WaitForSeconds(3);
-        animal.gameObject.SetActive(true);
+        yield return new WaitForSeconds(timeSpawnAgain);
         animal.Return();
         animal.gameObject.transform.position = GenerateSpawnPosition();
     }

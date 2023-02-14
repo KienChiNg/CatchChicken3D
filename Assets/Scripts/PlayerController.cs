@@ -8,12 +8,11 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Rigidbody playerRb;
     [SerializeField] private FixedJoystick joystick;
+    [SerializeField] private UIManager uIManager;
     [SerializeField] private float moveSpeed;
     [SerializeField] private Animator playerAnim;
-    public int avaiableCatch = 1;
-
     [Range(1, 100)] public int segments = 50;
-    [Range(1, 500)] public float radius = 5;
+    [Range(1, 500)] private float radius = 5;
     // [Range(1, 500)] public float yRadius = 5; 
     [Range(0.1f, 5)] public float width = 0.1f;
     [Range(0, 100)] public float height = 0;
@@ -23,15 +22,20 @@ public class PlayerController : MonoBehaviour
     Vector3 offset = Vector3.zero;
     public List<GameObject> animalGO;
     private LineRenderer lineRenderer;
-    // private float timerDestroyObj = 3;
-    // private Billboard billboard;
+    public int avaiableCatch ;
+    private int coin = 0;
+
+    public float MoveSpeed { get => moveSpeed; set => moveSpeed = value; }
+    public float Radius { get => radius; set => radius = value; }
+    public int Coin { get => coin; set => coin = value; }
+
     void Start()
     {
         lineRenderer = GetComponent<LineRenderer>();
         DrawCircle();
         // // Debug.DrawRay(transform.position, newDirection*50, Color.red);
     }
-    void DrawCircle()
+    public void DrawCircle()
     {
         lineRenderer.enabled = true;
         lineRenderer.useWorldSpace = false;
@@ -47,8 +51,8 @@ public class PlayerController : MonoBehaviour
         var points = new Vector3[segments + 1];
         for (int i = 0; i < segments + 1; i++)
         {
-            x = Mathf.Sin(Mathf.Deg2Rad * angle) * radius;
-            y = Mathf.Cos(Mathf.Deg2Rad * angle) * radius;
+            x = Mathf.Sin(Mathf.Deg2Rad * angle) * Radius;
+            y = Mathf.Cos(Mathf.Deg2Rad * angle) * Radius;
 
             points[i] = new Vector3(x, height, y);
 
@@ -56,9 +60,18 @@ public class PlayerController : MonoBehaviour
         }
         lineRenderer.SetPositions(points);
     }
+    public void IncrementScore(){
+        coin += 1;
+        uIManager.SetScoreTxt($"Coin: {coin}");
+    }
+    public void DecrementScore(int c){
+        coin -= c;
+        uIManager.SetScoreTxt($"Coin: {coin}");
+    }
+
     private void FixedUpdate()
     {
-        playerRb.velocity = new Vector3(joystick.Horizontal * moveSpeed, playerRb.velocity.y, joystick.Vertical * moveSpeed);
+        playerRb.velocity = new Vector3(joystick.Horizontal * MoveSpeed, playerRb.velocity.y, joystick.Vertical * MoveSpeed);
         if (joystick.Horizontal != 0 || joystick.Vertical != 0)
         {
             // Debug.Log(joystick.Horizontal + " " + joystick.Vertical);
@@ -67,28 +80,11 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            // moveSpeed = 2;
             playerAnim.SetFloat("Speed_f", 0f);
         }
     }
     void Update()
     {
         if (target) transform.position = target.position + offset;
-        // Debug.Log(animalGO.Count);
-        // if (animalGO.Any())
-        // {
-        //     // Debug.Log(animalGO[0].name);
-        //     // timerDestroyObj -= Time.deltaTime;
-        // }
-        // else
-        // {
-        //     if (animalGO.Any()){
-        //         GameObject.Find(animalGO[0].name).SetActive(false);
-        //         animalGO.RemoveAt(0);
-        //     }
-        //         // Destroy(GameObject.Find(animalGO[0].name));
-        //         // Debug.Log(animalGO[0].name);
-        //     // timerDestroyObj = 3;
-        // }
     }
 }

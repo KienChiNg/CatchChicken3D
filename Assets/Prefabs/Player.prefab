@@ -833,8 +833,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerRb: {fileID: 3535588394782882627}
   joystick: {fileID: 0}
+  uIManager: {fileID: 0}
   moveSpeed: 10
   playerAnim: {fileID: 3535588394791867582}
+  avaiableCatch: 2
   segments: 100
   radius: 5
   width: 0.1
